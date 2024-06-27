@@ -1,0 +1,10 @@
+all: core_os_module
+
+core_os_module: core_os_module.o
+    gcc -o core_os_module core_os_module.o
+
+core_os_module.o: core_os_module.c
+    gcc -c core_os_module.c
+
+clean:
+    rm -f core_os_module core_os_module.o
