@@ -23,6 +23,7 @@ make
 ./core_os_module monitor --iterations 2 --interval 1
 popd >/dev/null
 
+mkdir -p "$ROOT_DIR/ai-ml/artifacts"
 python3 "$ROOT_DIR/ai-ml/data_preprocessing.py" --input "$ROOT_DIR/ai-ml/data/sample.csv" --output "$ROOT_DIR/ai-ml/artifacts/split.json"
 python3 "$ROOT_DIR/ai-ml/training.py" --input "$ROOT_DIR/ai-ml/data/sample.csv" --model "$ROOT_DIR/ai-ml/artifacts/model.json"
 python3 "$ROOT_DIR/ai-ml/llm.py" --model "$ROOT_DIR/ai-ml/artifacts/model.json" --text "Example classification"

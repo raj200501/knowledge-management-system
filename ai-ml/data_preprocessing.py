@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 
 
 def load_csv(path):
@@ -43,6 +44,10 @@ def main():
         "train": list(zip(x_train, y_train)),
         "test": list(zip(x_test, y_test)),
     }
+
+    output_dir = os.path.dirname(args.output)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     with open(args.output, "w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)
