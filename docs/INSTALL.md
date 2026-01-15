@@ -1,67 +1,48 @@
 # Installation Guide
 
-## Backend
+The verified workflow uses only the Python standard library and system tools. No external Python dependencies are required.
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/knowledge-management-system.git
-   cd knowledge-management-system/backend
-Create a virtual environment and activate it:
+## Prerequisites
 
-python3 -m venv venv
-source venv/bin/activate
-Install the dependencies:
+- Python 3.10+
+- `gcc` and `make` for the C module
 
-pip install -r requirements.txt
-Initialize the database:
+## Backend + Tooling (Verified)
 
-flask db init
-flask db migrate
-flask db upgrade
-Run the backend server:
+```sh
+./scripts/run.sh
+```
 
-python app.py
-Core OS
-Navigate to the core-os directory:
+`run.sh` launches the backend API using the system Python.
 
-cd ../core-os
-Build the project:
+## Manual Setup (Optional)
 
+```sh
+python3 -m backend.app
+```
+
+## Core OS Module (Optional)
+
+```sh
+cd core-os
 make
-Run the executable:
-
 ./core_os_module secure
-To monitor system performance:
+```
 
-./core_os_module monitor
-iOS App
-Open the KnowledgeApp directory in Xcode:
+## AI/ML Utilities (Optional)
 
-cd ../ios-app/KnowledgeApp
-open KnowledgeApp.xcodeproj
-Build and run the app on a simulator or a physical device.
+```sh
+cd ai-ml
+python3 data_preprocessing.py --input data/sample.csv --output artifacts/split.json
+python3 training.py --input data/sample.csv --model artifacts/model.json
+python3 llm.py --model artifacts/model.json --text "Example classification"
+```
 
-Web App
-Navigate to the web-app directory:
+## Web App (Optional)
 
-cd ../../web-app
-Install the dependencies:
+```sh
+cd web-app
+python3 -m http.server 3000
+```
 
-npm install
-Start the development server:
-
-npm start
-AI & ML
-Ensure you have Python and the necessary dependencies installed.
-Run the training script:
-
-cd ../ai-ml
-python training.py
-Security and SRE
-Navigate to the security directory:
-
-cd ../security
-Run the security and SRE scripts:
-
-python security.py
-python sre.py
+Then open `http://localhost:3000`.

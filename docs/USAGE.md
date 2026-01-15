@@ -1,56 +1,58 @@
-### **USAGE.md**
-
-```markdown
 # Usage Guide
 
-## Backend
+## Backend API
 
-The backend server runs on `http://127.0.0.1:5000`. Use tools like Postman or cURL to interact with the API endpoints.
+The backend server runs on `http://127.0.0.1:5000` by default and uses the Python standard library.
 
 ### Endpoints
 
-- `GET /entries`: Retrieve all knowledge entries.
+- `GET /health`: Health check with service metadata.
+- `GET /entries`: Retrieve knowledge entries with pagination and search.
+  - Query params: `query`, `tag`, `limit`, `offset`
 - `POST /entry`: Add a new knowledge entry.
 - `GET /entry/<id>`: Retrieve a specific knowledge entry by ID.
 - `PUT /entry/<id>`: Update a knowledge entry by ID.
 - `DELETE /entry/<id>`: Delete a knowledge entry by ID.
 
-## iOS App
+### Example Workflow
 
-Use the iOS app to manage knowledge entries on the go. The app interfaces with the backend server to perform CRUD operations.
+```sh
+curl -s http://127.0.0.1:5000/health
 
-1. Open the app on your iOS device or simulator.
-2. Enter the title and content for the new entry.
-3. Tap "Save Entry" to store the entry in the backend.
+curl -s -X POST http://127.0.0.1:5000/entry \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"First Entry","content":"Hello knowledge base","tags":["intro","example"]}'
+
+curl -s http://127.0.0.1:5000/entries?query=hello
+```
 
 ## Web App
 
-The web app provides a user-friendly interface for managing knowledge entries. Navigate to `http://localhost:3000` in your browser to access the app.
+The web app is static and expects the backend running at `http://127.0.0.1:5000`.
 
-1. Open your browser and navigate to `http://localhost:3000`.
-2. Use the form to enter the title and content of a new entry.
-3. Click "Save Entry" to add the entry to the backend.
-4. View existing entries displayed on the page.
+```sh
+cd web-app
+python3 -m http.server 3000
+```
 
-## AI & ML
+Then open `http://localhost:3000`.
 
-Use the AI/ML scripts to preprocess data, train models, and classify text.
+## AI/ML Utilities
 
-1. Preprocess your data using the `data_preprocessing.py` script.
-   ```sh
-   python data_preprocessing.py
-Train your models using the training.py script.
+The AI/ML utilities are designed to be run locally with the sample dataset.
 
-python training.py
-Classify text using the llm.py script.
+```sh
+cd ai-ml
+python3 data_preprocessing.py --input data/sample.csv --output artifacts/split.json
+python3 training.py --input data/sample.csv --model artifacts/model.json
+python3 llm.py --model artifacts/model.json --text "Example classification"
+```
 
-python llm.py
-Security and SRE
-Run the security and SRE scripts to ensure the system's integrity and monitor its health.
+## Security and SRE
 
-Hash and verify passwords using the security.py script.
-
-python security.py
-Monitor system health using the sre.py script.
-
-python sre.py
+```sh
+cd security
+python3 security.py hash --password "example"
+python3 security.py verify --password "example" --hash <hash> --salt <salt>
+python3 sre.py report
+```

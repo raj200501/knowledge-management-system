@@ -1,15 +1,21 @@
-import transformers
+import argparse
+import json
 
-class KnowledgeLLM:
-    def __init__(self, model_name='distilbert-base-uncased'):
-        self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
-        self.model = transformers.AutoModelForSequenceClassification.from_pretrained(model_name)
+from naive_bayes import predict_naive_bayes
 
-    def classify(self, text):
-        inputs = self.tokenizer(text, return_tensors='pt')
-        outputs = self.model(**inputs)
-        return outputs.logits.argmax().item()
 
-# Example usage
-llm = KnowledgeLLM()
-print(llm.classify("Sample text for classification."))
+def main():
+    parser = argparse.ArgumentParser(description="Run text classification")
+    parser.add_argument("--model", required=True, help="Model JSON path")
+    parser.add_argument("--text", required=True, help="Text to classify")
+    args = parser.parse_args()
+
+    with open(args.model, "r", encoding="utf-8") as handle:
+        model = json.load(handle)
+
+    label = predict_naive_bayes(model, args.text)
+    print(json.dumps({"label": label, "text": args.text}, indent=2))
+
+
+if __name__ == "__main__":
+    main()

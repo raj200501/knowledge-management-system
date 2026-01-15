@@ -6,29 +6,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <getopt.h>
 
 #define BUFFER_SIZE 1024
 
-void perform_secure_operations() {
-    printf("Performing secure core OS operations...\n");
-    // Example secure operation: File encryption (simplified)
-    char *filename = "secure_file.txt";
-    char *content = "This is some sensitive data.";
-    char *encrypted_content = encrypt_content(content);
-
-    int fd = open(filename, O_WRONLY | O_CREAT, 0600);
-    if (fd < 0) {
-        perror("Failed to open file for writing");
-        return;
-    }
-    write(fd, encrypted_content, strlen(encrypted_content));
-    close(fd);
-
-    free(encrypted_content);
-    printf("Secure file operation completed.\n");
-}
-
-char *encrypt_content(const char *content) {
+static char *encrypt_content(const char *content) {
     size_t len = strlen(content);
     char *encrypted_content = malloc(len + 1);
     if (!encrypted_content) {
@@ -37,14 +19,42 @@ char *encrypt_content(const char *content) {
     }
 
     for (size_t i = 0; i < len; ++i) {
-        encrypted_content[i] = content[i] ^ 0xAA; // Simple XOR encryption
+        encrypted_content[i] = content[i] ^ 0xAA;
     }
     encrypted_content[len] = '\0';
 
     return encrypted_content;
 }
 
-void print_system_info() {
+static int write_secure_file(const char *filename, const char *content) {
+    char *encrypted_content = encrypt_content(content);
+    if (!encrypted_content) {
+        return 1;
+    }
+
+    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    if (fd < 0) {
+        perror("Failed to open file for writing");
+        free(encrypted_content);
+        return 1;
+    }
+    write(fd, encrypted_content, strlen(encrypted_content));
+    close(fd);
+
+    free(encrypted_content);
+    return 0;
+}
+
+static void perform_secure_operations() {
+    printf("Performing secure core OS operations...\n");
+    if (write_secure_file("secure_file.txt", "This is some sensitive data.")) {
+        fprintf(stderr, "Secure file operation failed.\n");
+        return;
+    }
+    printf("Secure file operation completed.\n");
+}
+
+static void print_system_info() {
     struct sysinfo sys_info;
     if (sysinfo(&sys_info) != 0) {
         perror("sysinfo");
@@ -57,29 +67,74 @@ void print_system_info() {
     printf("Process count: %d\n", sys_info.procs);
 }
 
-void monitor_performance() {
+static void monitor_performance(int iterations, int interval) {
     printf("Monitoring system performance...\n");
-    while (1) {
+    for (int i = 0; i < iterations; i++) {
         print_system_info();
-        sleep(5);
+        sleep(interval);
     }
+}
+
+static void print_usage(const char *program) {
+    fprintf(stderr, "Usage: %s <operation> [options]\n", program);
+    fprintf(stderr, "Operations: secure, monitor\n");
+    fprintf(stderr, "Options for monitor:\n");
+    fprintf(stderr, "  --iterations <n>  Number of iterations (default: 3)\n");
+    fprintf(stderr, "  --interval <n>    Seconds between checks (default: 1)\n");
 }
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        fprintf(stderr, "Usage: %s <operation>\n", argv[0]);
-        fprintf(stderr, "Operations: secure, monitor\n");
+        print_usage(argv[0]);
         return 1;
     }
 
-    if (strcmp(argv[1], "secure") == 0) {
+    const char *operation = argv[1];
+    int iterations = 3;
+    int interval = 1;
+
+    if (strcmp(operation, "monitor") == 0) {
+        static struct option long_options[] = {
+            {"iterations", required_argument, 0, 'i'},
+            {"interval", required_argument, 0, 't'},
+            {0, 0, 0, 0}
+        };
+
+        int opt;
+        int option_index = 0;
+        while ((opt = getopt_long(argc - 1, argv + 1, "", long_options, &option_index)) != -1) {
+            switch (opt) {
+                case 'i':
+                    iterations = atoi(optarg);
+                    break;
+                case 't':
+                    interval = atoi(optarg);
+                    break;
+                default:
+                    print_usage(argv[0]);
+                    return 1;
+            }
+        }
+
+        if (iterations <= 0) {
+            fprintf(stderr, "Iterations must be positive.\n");
+            return 1;
+        }
+        if (interval <= 0) {
+            fprintf(stderr, "Interval must be positive.\n");
+            return 1;
+        }
+
+        monitor_performance(iterations, interval);
+        return 0;
+    }
+
+    if (strcmp(operation, "secure") == 0) {
         perform_secure_operations();
-    } else if (strcmp(argv[1], "monitor") == 0) {
-        monitor_performance();
-    } else {
-        fprintf(stderr, "Invalid operation: %s\n", argv[1]);
-        return 1;
+        return 0;
     }
 
-    return 0;
+    fprintf(stderr, "Invalid operation: %s\n", operation);
+    print_usage(argv[0]);
+    return 1;
 }

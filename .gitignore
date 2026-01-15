@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+ai-ml/artifacts/
+core-os/core_os_module
+core-os/core_os_module.o
+core-os/secure_file.txt

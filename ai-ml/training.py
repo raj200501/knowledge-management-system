@@ -1,36 +1,24 @@
-from transformers import Trainer, TrainingArguments
-import torch
+import argparse
+import json
 
-class TrainerWrapper:
-    def __init__(self, model, tokenizer, train_dataset, eval_dataset):
-        self.model = model
-        self.tokenizer = tokenizer
-        self.train_dataset = train_dataset
-        self.eval_dataset = eval_dataset
+from naive_bayes import train_naive_bayes
+from data_preprocessing import load_csv
 
-    def train(self):
-        training_args = TrainingArguments(
-            output_dir='./results',          
-            num_train_epochs=3,              
-            per_device_train_batch_size=8,  
-            per_device_eval_batch_size=8,   
-            warmup_steps=500,               
-            weight_decay=0.01,              
-            logging_dir='./logs',            
-            logging_steps=10,
-        )
-        
-        trainer = Trainer(
-            model=self.model,                
-            args=training_args,                  
-            train_dataset=self.train_dataset,         
-            eval_dataset=self.eval_dataset            
-        )
 
-        trainer.train()
+def main():
+    parser = argparse.ArgumentParser(description="Train a naive Bayes classifier")
+    parser.add_argument("--input", required=True, help="CSV dataset")
+    parser.add_argument("--model", required=True, help="Output model path")
+    args = parser.parse_args()
 
-# Example usage
-# Assume train_dataset and eval_dataset are already created
-# model and tokenizer are instances of HuggingFace models
-trainer = TrainerWrapper(model, tokenizer, train_dataset, eval_dataset)
-trainer.train()
+    texts, labels = load_csv(args.input)
+    model = train_naive_bayes(texts, labels)
+
+    with open(args.model, "w", encoding="utf-8") as handle:
+        json.dump(model, handle, indent=2)
+
+    print(f"Model saved to {args.model}")
+
+
+if __name__ == "__main__":
+    main()

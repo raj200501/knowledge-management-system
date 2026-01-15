@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knowledge Management System</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Knowledge Management System</h1>
+      <p>Use the form below to add a knowledge entry.</p>
+      <form id="entry-form">
+        <label>
+          Title
+          <input type="text" id="title" required minlength="3" />
+        </label>
+        <label>
+          Content
+          <textarea id="content" required minlength="5"></textarea>
+        </label>
+        <label>
+          Tags (comma-separated)
+          <input type="text" id="tags" />
+        </label>
+        <button type="submit">Save Entry</button>
+      </form>
+      <section>
+        <h2>Entries</h2>
+        <ul id="entries"></ul>
+      </section>
+    </main>
+    <script>
+      const apiBase = "http://127.0.0.1:5000";
+      const form = document.getElementById("entry-form");
+      const entries = document.getElementById("entries");
+
+      async function loadEntries() {
+        const res = await fetch(`${apiBase}/entries`);
+        const payload = await res.json();
+        entries.innerHTML = "";
+        payload.data.items.forEach((entry) => {
+          const li = document.createElement("li");
+          li.textContent = `${entry.title}: ${entry.content}`;
+          entries.appendChild(li);
+        });
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+        const tags = document.getElementById("tags").value.split(",").map((tag) => tag.trim()).filter(Boolean);
+
+        await fetch(`${apiBase}/entry`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, content, tags }),
+        });
+
+        form.reset();
+        await loadEntries();
+      });
+
+      loadEntries();
+    </script>
+  </body>
+</html>
