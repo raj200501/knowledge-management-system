@@ -1,45 +1,57 @@
-.app {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f6f7fb;
+  margin: 0;
+  padding: 0;
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
+.container {
+  max-width: 720px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.form input, .form textarea {
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 16px;
+form {
+  display: grid;
+  gap: 1rem;
 }
 
-.form button {
-    padding: 10px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    cursor: pointer;
+label {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 600;
 }
 
-.form button:hover {
-    background-color: #0056b3;
+input,
+textarea {
+  padding: 0.6rem;
+  border: 1px solid #d0d7e2;
+  border-radius: 6px;
 }
 
-.entries {
-    margin-top: 20px;
+button {
+  background: #2f6fed;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.entry {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+button:hover {
+  background: #275ccd;
 }
 
-.entry h2 {
-    margin: 0;
-    font-size: 24px;
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eef0f4;
 }

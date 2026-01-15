@@ -1,24 +1,18 @@
-# Knowledge Management System
+# Knowledge Management System (Docs)
 
-A comprehensive system for knowledge management and decision-making. This repository includes backend development, core OS development, iOS and web development, AI/ML integration, and security features.
+This documentation directory provides supporting material for the Knowledge Management System. The canonical quickstart and verified commands live in the repository root `README.md`.
 
-## Features
+## Documentation Index
 
-- Backend Development with Python, Java, and Golang
-- Core OS Development in C
-- iOS App Development with Swift
-- Web App Development with React.js and Node.js
-- AI/ML Integration using HuggingFace Transformers
-- Advanced Security and Site Reliability Engineering (SRE) Practices
+- `INSTALL.md`: Step-by-step install notes and prerequisites
+- `USAGE.md`: Detailed API usage and examples
+- `CONTRIBUTING.md`: Development workflow and coding guidelines
+- `ARCHITECTURE.md`: System design and module responsibilities
+- `API.md`: API endpoint reference
+- `TROUBLESHOOTING.md`: Common issues and fixes
+- `RUNBOOK.md`: Operational notes and health checks
+- `BACKEND_OPERATIONS.md`: Extended backend operational checklist
+- `DEVELOPMENT_GUIDE.md`: Deep-dive development notes
+- `EXTENDED_RUNBOOK.md`: Expanded operational alerts and mitigations
 
-## Installation
-
-Please refer to the `INSTALL.md` file for detailed installation instructions.
-
-## Usage
-
-Refer to the `USAGE.md` file for instructions on how to use the system.
-
-## Contributing
-
-Please read the `CONTRIBUTING.md` file for guidelines on contributing to this project.
+Start with the repository root `README.md` for verified commands.
